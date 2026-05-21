@@ -6,8 +6,9 @@
 ---
 
 ## Navigation
+**← [Prev: Document 03 (EOS Architecture)](03_eos_architecture.md) | [Next: Document 05 (Engineering Trajectory Intelligence)](05_engineering_trajectory_intelligence.md) →**
 
-**← [Previous: Document 03 (EOS Architecture)](03_eos_architecture.md)**
+~~
 
 - [0. Status, Scope, and Authority](#0-status-scope-and-authority)
 - [1. Purpose](#1-purpose)
