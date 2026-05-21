@@ -6,7 +6,7 @@
 ---
 
 ## Navigation
-**[Next: Document 01 (Core Architectural Principles)](01_core_architectural_principles.md) →**
+**← [Prev: Document 00 (Style Guide)](00_style_guide.md) | [Next: Document 02 (Ecosystem Analysis)](02_ecosystem_analysis.md) →**
 
 - [0. Status, Scope, and Authority](#0-status-scope-and-authority)
 - [1. Purpose](#1-purpose)
