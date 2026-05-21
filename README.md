@@ -11,10 +11,19 @@ EOS is an engineering operating substrate focused on:
 
 EOS is currently under active architectural and implementation development.
 
-## Manifest
+## Documentation
 
-- [00_manifest.md](docs/00_manifest.md)
+- [00 Style Guide](docs/00_style_guide.md)
 
+- [01 Manifest](docs/01_manifest.md)
+
+- [02 Ecosystem Analysis](docs/02_ecosystem_analysis.md)
+
+- [03 EOS Architecture](docs/03_eos_architecture.md)
+
+- [04 EOS Roadmap](docs/04_eos_roadmap.md)
+
+- [05 Engineering Trajectory Intelligence](docs/05_engineering_trajectory_intelligence.md)
 ## Core Directions
 
 - Memory Steward
