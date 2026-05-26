@@ -411,6 +411,46 @@ Federation MUST remain:
 - privacy-aware
 - provenance-aware
 
+
+### 11.1 Enterprise Federated Trust Mesh
+
+Large enterprises MAY operate multiple EOS instances across teams, products, or business units. These instances MAY form an explicit trust mesh — a declared set of trusted neighbors that share trajectory data internally without that data leaving the enterprise perimeter.
+
+**Trust mesh model:**
+
+Each EOS instance declares its trusted neighbors through explicit configuration. Trajectory data flows only within the declared trust boundary. No central hub receives enterprise data. The mesh is peer-to-peer within the boundary.
+
+**Joint model training:**
+
+Instances within a trust mesh jointly train a shared model on their combined internal corpus. This model learns:
+- the organization's engineering patterns and preferences
+- internal architectural vocabulary and conventions
+- domain-specific failure signatures and recovery patterns
+- team-specific decomposition effectiveness
+
+The resulting model is more capable than any single instance could produce alone, while remaining entirely within the enterprise perimeter.
+
+**Community corpus reinforcement:**
+
+The enterprise trust mesh model MAY optionally be reinforced with sanitized structural patterns from the community corpus — subject to enterprise policy. This gives the enterprise model both domain-specific depth and broad external intelligence, without exposing internal data outward.
+
+The combination: private corpus depth + community corpus breadth = a model that is both organizationally specialized and broadly capable.
+
+**Why this matters for enterprise:**
+
+Large organizations have engineering patterns, architectural preferences, and domain vocabulary that general-purpose models do not know. A model trained on the organization's own trajectory data — its successful decompositions, its reviewer guidance that actually worked, its specific failure modes — is substantially more valuable than a generic model.
+
+The trust mesh makes this achievable without requiring the organization to trust a third-party data custodian with its engineering knowledge.
+
+**Governance requirements:**
+
+Trust mesh configuration MUST:
+- require explicit bilateral declaration (both instances must declare the other as trusted)
+- log all data flows within the mesh
+- support revocation of trust relationships
+- preserve tenant isolation within the mesh
+- never route data outside the declared boundary without explicit configuration
+
 [Back to top](#navigation)
 
 ---
@@ -508,6 +548,165 @@ EOS SHOULD remain:
 - operationally grounded
 
 during all reinforcement evolution.
+
+original engineering intent
+
+The product lifecycle support loop:
+
+1. Telemetry, logs, and user reports surface anomalies in the running application
+2. The support model, grounded in the build corpus, diagnoses the issue
+3. If a fix is needed, it feeds back into Relentless Rekrow as a new task with the accepted codebase as baseline
+4. The same planner/coder/verifier/reviewer loop applies, now in maintenance mode
+5. The fix is delivered with the same quality guarantees as the original build
+6. The build corpus is updated with the new slice history
+
+This creates a product lifecycle that does not end at delivery. The system that built the product is uniquely positioned to support and maintain it.
+
+**Retention policy implication:** Artifact retention decisions made during initial implementation directly affect support model capability. The build corpus must be retained, not treated as disposable execution logs.
+
+---
+
+### 14.1 Product Lifecycle Intelligence — Support and Maintenance Model
+
+A specific and high-value application of engineering trajectory intelligence is the product lifecycle support model.
+
+When EOS executes a project to completion, the resulting artifact corpus contains:
+- planner decompositions with full architectural intent
+- coder diffs with provenance per slice
+- verifier results showing what tests were written and what they verify
+- reviewer verdicts with quality assessments
+- controller decisions with full progression trace
+
+This corpus is richer than source code alone. It is the decision trail behind the code.
+
+A model grounded in this corpus can:
+- diagnose production issues with full architectural context
+- answer questions such as "why was this component designed this way"
+- identify which tests actually verify which requirements
+- suggest fixes informed by the original engineering intent
+
+The product lifecycle support loop:
+
+1. Telemetry, logs, and user reports surface anomalies in the running application
+2. The support model, grounded in the build corpus, diagnoses the issue
+3. If a fix is needed, it feeds back into Relentless Rekrow as a new task with the accepted codebase as baseline
+4. The same planner/coder/verifier/reviewer loop applies, now in maintenance mode
+5. The fix is delivered with the same quality guarantees as the original build
+6. The build corpus is updated with the new slice history
+
+This creates a product lifecycle that does not end at delivery. The system that built the product is uniquely positioned to support and maintain it.
+
+**Retention policy implication:** Artifact retention decisions made during initial implementation directly affect support model capability. The build corpus must be retained, not treated as disposable execution logs.
+
+---
+
+### 14.2 Community Hub — Trajectory Data Exchange and Model Access
+
+EOS MAY evolve a community hub where operators and architects share sanitized trajectory data in exchange for access to community-trained models.
+
+**Core exchange model:**
+
+Contribute governed trajectory data → earn access to progressively better role-specific models (Planner, Coder, Reviewer, Controller).
+
+The community corpus trains models that improve with scale. Individual contributors benefit from the collective intelligence of all contributors.
+
+**Admission and corpus governance:**
+
+Not all trajectory data is equal. The community hub MUST operate an admission gate.
+
+Admission criteria MAY include:
+- project completed successfully with accepted slices
+- retry rate below a defined threshold
+- reviewer certification achieved at a defined level
+- minimum project complexity threshold
+
+Admission criteria SHOULD be transparent and community-governed as the hub matures. High-reputation contributors MAY participate in setting and evolving admission standards.
+
+**Contributor reputation:**
+
+Contributors accumulate reputation based on:
+- number of successfully admitted projects
+- trajectory quality (low retry rates, high first-pass acceptance rates)
+- domain diversity
+- consistency over time
+
+High-reputation contributors MAY receive early access to new model versions and influence over corpus governance.
+
+**Data sanitization:**
+
+The trajectory data that matters for model training is structural, not semantic. What converged quickly, what reviewer guidance actually helped, which failure signatures led to successful retries — these patterns can be extracted without exposing the actual source code, domain logic, or proprietary architecture.
+
+Sanitization MUST:
+- strip source code content
+- strip domain-specific identifiers
+- preserve structural convergence patterns
+- preserve failure and retry signatures
+- preserve decomposition effectiveness signals
+- maintain provenance without reconstructability of original content
+
+**Model release cadence:**
+
+Community contributors receive access to newly trained model versions immediately upon release.
+
+Standalone users receive the same models on a delayed cadence — approximately 3 to 6 months. This is not artificial crippling. Standalone models remain genuinely capable. The delay reflects the value of community participation without creating resentment or pressure to contribute data that should remain private.
+
+**Tiered value proposition:**
+
+- **Standalone** — full EOS platform with general-purpose models. No data sharing required. Models released on delayed cadence.
+- **Community** — contribute sanitized trajectory data, receive early access to community-trained models. Quality compounds as the corpus grows.
+- **Enterprise** — private corpus federation within a trust boundary (see section 11.1), dedicated model training, no data leaving the enterprise perimeter, SLA, priority support.
+
+---
+
+### 14.3 Community Compute Contribution
+
+EOS users who run local AI infrastructure MAY contribute compute resources to community model training in exchange for additional hub benefits.
+
+**Rationale:**
+
+EOS users are disproportionately likely to operate local GPU infrastructure for inference. That same hardware has idle capacity that can participate in community model training. This creates a three-dimensional contribution model: data, compute, or both.
+
+**Opt-in and bounded:**
+
+Compute contribution is strictly voluntary. Each participant declares:
+- maximum GPU memory available for contribution
+- maximum hours per day
+- which training runs they are willing to participate in
+
+The hub MUST NOT exceed declared limits. Participants may revoke compute contribution at any time without affecting their data contribution status or accumulated reputation.
+
+**Federated training — data stays local:**
+
+Compute contribution does not require sending raw trajectory data to an external training cluster. Federated learning techniques allow model training to occur across distributed nodes with only model gradients — not raw data — traveling between nodes.
+
+This preserves the same privacy guarantees as the data sanitization model. The training intelligence is shared. The underlying data is not.
+
+**Transparent accounting:**
+
+Every compute contribution is logged and visible to the contributor:
+- compute hours contributed
+- training runs participated in
+- model versions produced using that contribution
+- benefits received in exchange
+
+There are no hidden extractions. The contributor always knows what they gave and what they received.
+
+**Contribution benefits:**
+
+Compute contributors MAY receive:
+- accelerated model release cadence beyond standard community access
+- priority participation in training runs relevant to their domain
+- increased reputation weighting
+- reduced subscription costs proportional to contribution value
+- early access to experimental model variants
+
+**The fairness invariant:**
+
+Contribution of data, compute, or both MUST translate to proportional, visible, and auditable benefits.
+
+The community hub MUST NOT be extractive. It MUST NOT silently consume resources beyond declared limits. It MUST NOT obscure the relationship between contribution and benefit.
+
+This invariant is not merely a design preference. It is a trust requirement. A community hub that violates it will not retain contributors. A hub that maintains it creates a genuine engineering commons where participation is rational and rewarding for all parties.
 
 [Back to top](#navigation)
 
