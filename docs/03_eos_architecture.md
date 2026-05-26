@@ -377,26 +377,66 @@ Planner outputs SHOULD avoid:
 Slices function as:
 - bounded executable engineering units
 
-Slices SHOULD contain:
-- explicit targets
-- explicit constraints
-- execution boundaries
-- verification expectations
-- operational metadata
+### 10.1 Planner Directives — Configurable Decomposition Parameters
 
-Slice execution SHOULD occur inside:
-- isolated execution environments
+The Planner operates from two inputs: the project specification and a set of planner directives.
 
-Execution loops MAY include:
-- iterative patching
-- verification retries
-- bounded correction attempts
+Planner directives are configurable parameters that shape how the Planner decomposes a project without changing its core logic. They represent the engineering culture applied to the project.
 
-Execution state SHOULD preserve:
-- diffs
-- iteration lineage
-- execution evidence
-- progression telemetry
+Planner directives MAY include:
+
+- **Planning strategy** — how slices are sequenced and structured. Examples: linear sequential, foundation-first (shared infrastructure before dependent components), reference propagation (early slices establish patterns that later slices inherit as reference implementations).
+- **Development methodology** — TDD (write tests first), BDD, interface-first, documentation-first.
+- **Quality posture** — conservative (minimal changes, high test coverage) vs aggressive (move fast, refactor later).
+- **Coupling preference** — loose coupling enforced, or pragmatic coupling allowed.
+- **Integration approach** — incremental integration with dependency ordering vs big-bang assembly at a final integration slice.
+
+Planner directives are:
+
+- provided by the human architect or default configuration
+- rendered into the planner prompt as structured guidance paragraphs
+- not invented by the system
+
+The human architect defines the engineering culture. The Planner respects it.
+
+-----
+
+### 10.2 Slice Dependency Model — DAG not Linear Sequence
+
+Slices MAY have explicit dependencies on other slices.
+
+A `depends_on` field per slice enables a dependency DAG rather than a flat linear sequence. This enables:
+
+- parallel execution of independent slices
+- guaranteed ordering for dependent slices
+- integration slices that assemble prior accepted outputs
+
+-----
+
+### 10.3 Reference Propagation
+
+When a slice’s planner directive includes reference propagation, later slices receive accepted output from prior slices as reference implementations in their coder context.
+
+The coder sees: “here is an accepted implementation of a similar component — follow the same patterns, adapt for this slice’s objective.”
+
+This propagates quality patterns across the project. If early slices were accepted under a strict admission policy with reviewer certification, later slices inheriting from them inherit certified-quality patterns.
+
+Reference propagation does not require prior slices to be functional prerequisites. It is pattern inheritance, not functional dependency.
+
+-----
+
+### 10.4 Hierarchical Planner
+
+For large projects, decomposition itself is a multi-step reasoning problem.
+
+A hierarchical planner model operates in two passes:
+
+1. **Coarse planner** — breaks the project into major architectural components
+1. **Fine planner** — decomposes each component into bounded executable slices
+
+The coarse pass output feeds the fine pass. Each pass produces structured artifacts that become trajectory data.
+
+This model reduces context pressure on any single planner invocation and improves decomposition quality for complex projects.
 
 [Back to top](#navigation)
 
