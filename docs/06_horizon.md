@@ -90,6 +90,8 @@ product released
 
 **Lifecycle Architect vs Planner:** the Planner decomposes a task tactically; the Lifecycle Architect reasons strategically about whether runtime evidence indicates a bug, a bad implementation choice, a bad slice boundary, a missing requirement, an architectural problem, a failed assumption, or a scale mismatch.
 
+**Meta-Planner and production-driven Warm Replan:** when production telemetry reveals a *systemic* architectural failure rather than a local bug, the evidence feeds a Meta-Planner. The Meta-Planner does not patch a line — it executes a Warm Replan, re-architecting the system based on real-world evidence. This is the same warm-replan mechanism specified for build-time run failure (RR Phase 1 plan), extended to operate on production evidence; the mechanism is identical, only the trigger source differs (build-time failure ratio vs systemic production telemetry).
+
 > **Hard Invariant (inherited from Document 03):** Telemetry is evidence, not command. Telemetry never directly mutates a product. Evidence → diagnosis → objective → governed execution.
 
 **Maintenance mode** differs from greenfield: it has an accepted codebase baseline, production context, existing tests and architecture, backward-compatibility constraints, and regression risk. The fix still passes through the full governed loop.
@@ -104,7 +106,7 @@ product released
 
 *Section status: EXPLORATORY*
 
-**Daytime — inference and execution.** The architect designs; Relentless Rekrow builds. Local models perform generation, producing a rich trajectory of attempts, verifier results, and controller decisions.
+**Daytime — inference and execution.** The architect designs; Relentless Rekrow builds. Local models (for example, a small local model such as Qwen 7B) perform generation, producing a rich trajectory of attempts, verifier results, and controller decisions.
 
 **Nighttime — adaptation.** When the system is idle, EOS shifts into a reinforcement cycle, using the day’s verified trajectories to improve role models.
 
