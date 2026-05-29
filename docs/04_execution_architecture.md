@@ -143,19 +143,64 @@ Execution outputs consumed by RR: canonical product documentation, decision hist
 
 ## 6. Relentless Rekrow (Execution View)
 
-Relentless Rekrow is the execution component. Roles:
+Relentless Rekrow is the execution component. Its architecture is the canonical **Planner → Slicer → Worker** model (manifest §10), where the Worker orchestrates an inner execution loop. The roles split across two tiers:
 
-|Role          |Responsibility                                                          |
-|--------------|------------------------------------------------------------------------|
-|**Planner**   |Decompose canonical corpus into bounded slices under directives         |
-|**Slicer**    |Convert planner objectives into executable bounded contracts            |
-|**Coder**     |Produce real patches (unified diffs) per slice attempt                  |
-|**Verifier**  |Apply patches and produce evidence from real command execution          |
-|**Reviewer**  |Evaluate evidence; never override verifier facts                        |
-|**Controller**|Deterministic progression authority; decides approve/retry/fail/escalate|
+```mermaid
+flowchart TB
+    subgraph UP["Upstream — decomposition"]
+        direction LR
+        P["Planner<br/><i>reasoning</i><br/>produces slices"]
+        S["Slicer<br/><b>deterministic</b><br/>enriches slices"]
+        P --> S
+    end
+
+    subgraph WK["Worker — orchestrates the inner loop"]
+        direction TB
+        C["Coder<br/><i>LLM</i><br/>writes code"]
+        V["Verifier<br/><b>deterministic</b><br/>runs checks → evidence"]
+        CT{"Controller<br/>decision authority<br/>pass / fail / retry"}
+        R["Reviewer<br/><i>LLM adviser</i><br/>guides next attempt"]
+
+        C --> V --> CT
+        CT -->|retry| R
+        R -->|guidance| C
+    end
+
+    S -->|bounded slice contract| WK
+    CT -->|pass| DONE([slice verified])
+    CT -->|fail| FAIL([slice failed])
+
+    classDef det fill:#1f2937,stroke:#10b981,color:#fff,stroke-width:2px;
+    classDef llm fill:#1f2937,stroke:#60a5fa,color:#fff,stroke-width:2px;
+    classDef dec fill:#1f2937,stroke:#f59e0b,color:#fff,stroke-width:2px;
+    class S,V det;
+    class P,C,R llm;
+    class CT dec;
+```
+
+*Green = deterministic, blue = LLM/reasoning, amber = decision authority.* The roles split across two tiers:
+
+**Upstream (decomposition) tier:**
+
+|Role       |Determinism      |Responsibility                                                                                                                                                                                                                  |
+|-----------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|**Planner**|reasoning        |Produces engineering objectives, decomposition boundaries, dependency structures, acceptance criteria, verification expectations, and context-risk awareness. Operates at strategic decomposition level.                        |
+|**Slicer** |**deterministic**|Converts planner objectives into executable bounded contracts. Enriches each slice with allowed paths, execution policies, runtime profiles, verification commands, retry policies, dependency ordering, and context boundaries.|
+
+**Worker (execution) tier — the Worker orchestrates the inner loop:**
+
+|Role          |Determinism       |Responsibility                                                                                                                                                                                                          |
+|--------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|**Worker**    |orchestrator      |Executes bounded iterative implementation loops. Applies patches, runs verification, persists artifacts, tracks progression, operates within governance constraints. The umbrella over the Coder; drives the loop below.|
+|**Coder**     |reasoning (LLM)   |Produces code/patches for the current slice attempt, using reviewer guidance on retries.                                                                                                                                |
+|**Verifier**  |**deterministic** |Runs the configured checks against the coded result; emits logs, traces, exit codes, and evidence. Does not judge — it observes.                                                                                        |
+|**Controller**|decision authority|Consumes verifier evidence and decides: pass, fail, or retry (another iteration). Governs progression.                                                                                                                  |
+|**Reviewer**  |adviser (LLM)     |On a retry, advises the Coder *before its next attempt* — adds valuable guidance to improve the next iteration. The Reviewer is an adviser positioned ahead of the next Coder attempt, not a gate after the Verifier.   |
 
 
-> **Hard Invariant:** Relentless Rekrow does not own the EOS lifecycle. It executes bounded engineering work under contracts and governance. (Stated once; not duplicated.)
+> **Hard Invariant:** The Reviewer advises the next Coder attempt on a retry. It does not sit between Verifier and Controller. A reviewer placed after the decision advises no one; its entire purpose is to make the next iteration smarter.
+
+> **Hard Invariant:** Relentless Rekrow does not own the EOS lifecycle. It executes bounded engineering work under contracts and governance.
 
 [Back to top](#navigation)
 
@@ -166,12 +211,16 @@ Relentless Rekrow is the execution component. Roles:
 ```text
 canonical corpus
   -> Planner: objectives + directives -> decomposition
-  -> Slicer: bounded executable slice contracts
-  -> for each slice (in dependency order):
-       -> iterative convergence loop (section 10)
+  -> Slicer (deterministic): enriches each slice into a bounded executable contract
+  -> Worker (orchestrator), for each slice in dependency order:
+       -> inner convergence loop (section 10):
+            Coder -> Verifier (deterministic) -> Controller decides pass/fail/retry
+            on retry: Reviewer (adviser) guides the next Coder attempt
   -> run reaches completion or controlled failure
   -> evidence + trajectory persisted with provenance
 ```
+
+This matches the canonical workflow chain (manifest §10, original architecture §8): `Planner -> Slicer -> Worker -> Verifier -> Controller`, with the Worker containing the Coder/Verifier/Controller iteration and the Reviewer advising retries.
 
 [Back to top](#navigation)
 
@@ -223,27 +272,34 @@ For large projects, decomposition is itself a multi-step reasoning problem. A hi
 
 ```text
 Not:  planner -> coder -> verifier -> done
-But:  planner -> slice -> bounded convergence loop -> deterministic controller -> verified slice
+But:  planner -> slicer -> worker orchestrates a bounded convergence loop -> verified slice
 ```
 
-Per slice:
+Per slice, the Worker orchestrates:
 
 ```text
 create language-aware workspace
 initialize slice-local Git history
 attempt_number = 1
 while attempt_number <= max_iterations:
-    coder attempt (with feedback packet if attempt > 1)
+    Coder produces code for the slice
+        (on attempt > 1, using the Reviewer's guidance from the prior iteration)
     apply patch in isolated workspace
     detect changed paths from git (not coder-declared)
     policy gate
-    run verification commands -> evidence
+    Verifier (deterministic) runs the checks -> logs, traces, exit codes, evidence
     commit attempt snapshot to slice Git
-    reviewer evaluates evidence
-    controller evaluates progress + oscillation signals:
-        APPROVE / RETRY / FAIL / ESCALATE
+    Controller consumes the evidence and decides:
+        PASS    -> exit loop, slice verified
+        FAIL    -> exit loop, slice failed
+        RETRY   -> another iteration is needed:
+                     Reviewer (LLM adviser) produces guidance for the next Coder attempt
+                     attempt_number += 1
+                     continue
 exit loop -> verified, failed, or escalated
 ```
+
+> **Hard Invariant:** The Verifier and the Slicer are deterministic. The Controller is the decision authority. The Reviewer is an LLM adviser that runs only on the retry path, ahead of the next Coder attempt — never as a gate between Verifier and Controller.
 
 Loop mechanics — feedback packets, progress detection, admission policy, provider escalation, run-level failure intelligence, warm replan — are specified in detail in the RR Phase 1 Implementation Plan. Each carries a hard invariant bounding its autonomy.
 
