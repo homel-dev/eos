@@ -285,7 +285,32 @@ intent / requirements
 
 This is the same shape as the software convergence loop. A test suite, a physics simulation, an FPGA timing check, and a manufacturability analysis are all the *verification* phase of the same governed loop. A diff, an HDL change, a CAD revision, and a PCB layout edit are all the *bounded execution* phase.
 
-> **The generalization claim:** EOS is fundamentally a *governed engineering workflow substrate*. Software is the first domain because its verification is the cheapest and fastest. The harder domains below share the same control structure — they differ only in the cost, latency, and physical reality of their verification step.
+```mermaid
+flowchart LR
+    subgraph LOOP["The invariant engineering loop"]
+        direction LR
+        I["intent /<br/>requirements"] --> M["engineering<br/>models"] --> X["bounded<br/>execution"] --> VER{"verification"} --> IT["iterate under<br/>governance"]
+        IT -.->|not yet converged| X
+        VER -->|converged| AP["approval +<br/>provenance"]
+    end
+
+    classDef node fill:#1f2937,stroke:#60a5fa,color:#fff,stroke-width:2px;
+    classDef ver fill:#1f2937,stroke:#10b981,color:#fff,stroke-width:2px;
+    class I,M,X,IT,AP node;
+    class VER ver;
+```
+
+The loop is invariant. Only the **execution** and **verification** steps change per domain — and they differ mainly in cost, latency, and physical reality:
+
+|Domain              |Bounded execution   |Verification                    |Verification cost     |
+|--------------------|--------------------|--------------------------------|----------------------|
+|**Software**        |code diff           |tests, compile                  |seconds — cheap & fast|
+|**Infrastructure**  |manifest / reconcile|reconciliation check, simulation|minutes               |
+|**Hardware / FPGA** |HDL change          |simulation, synthesis, timing   |hours                 |
+|**Mechanical / CAD**|CAD revision        |physics sim, manufacturability  |hours–days, physical  |
+
+
+> **The generalization claim:** EOS is fundamentally a *governed engineering workflow substrate*. Software is the first domain because its verification is the cheapest and fastest. The harder domains share the same control structure — they differ only in the cost, latency, and physical reality of their verification step.
 
 This is why domain expansion is a real architectural direction and not arbitrary scope creep: the substrate is domain-agnostic; only the execution and verification adapters are domain-specific.
 
