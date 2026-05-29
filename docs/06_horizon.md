@@ -51,6 +51,26 @@ EOS has a large and coherent long-term vision: a closed loop where engineering i
 
 But the vision is downstream of a single handshake working (Memory Steward → Relentless Rekrow). This document captures the vision honestly — as horizon, not as roadmap.
 
+```mermaid
+flowchart LR
+    H((human<br/>architect)) --> MS["Memory Steward<br/>canonical corpus"]
+    MS --> RR["Relentless Rekrow<br/>governed execution"]
+    RR --> EV["evidence +<br/>trajectory corpus"]
+    EV --> NIGHT["night cycle<br/>bounded learning"]
+    NIGHT -.->|better role models| RR
+    RR --> PROD["shipped product<br/>+ support model"]
+    PROD --> TEL["production<br/>telemetry"]
+    TEL --> META["Meta-Planner<br/>warm replan"]
+    META -.->|re-architecture| MS
+
+    classDef real fill:#1f2937,stroke:#10b981,color:#fff,stroke-width:2px;
+    classDef horizon fill:#111827,stroke:#6b7280,color:#9ca3af,stroke-width:2px,stroke-dasharray:5 5;
+    class MS,RR,EV real;
+    class NIGHT,PROD,TEL,META horizon;
+```
+
+*Solid green = real today (the handshake). Dashed grey = horizon, not yet built. The whole point of this document is the dashed boxes — and that they stay dashed until the green ones work.*
+
 [Back to top](#navigation)
 
 -----
@@ -84,7 +104,7 @@ product released
   -> Lifecycle Architect reviews in full build context
   -> maintenance objective produced
   -> Relentless Rekrow executes bounded fix (maintenance mode)
-  -> verifier / reviewer / controller validate
+  -> the same Worker loop applies: Coder -> Verifier -> Controller, Reviewer advising retries
   -> product + corpus updated
 ```
 
