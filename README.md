@@ -43,7 +43,7 @@ See **[Document 03](docs/03_kernel_and_components.md)** for the authoritative de
 ## Current Components
 
 - **Memory Steward** *(working concept)* — deterministic cognitive control plane; produces and preserves structured engineering intent as a canonical corpus.
-- **Relentless Rekrow** *(almost-working skeleton)* — governed AI execution on the **Planner → Slicer → Worker** model: Planner decomposes, deterministic Slicer enriches slices, Worker orchestrates the inner loop of Coder → Verifier (deterministic) → Controller (pass/fail/retry), with a Reviewer (LLM adviser) guiding the next Coder attempt on retries. Consumes canonical docs, emits an evidence corpus.
+- **Relentless Rekrow** *(almost-working skeleton)* — governed AI execution on the **Planner → Slicer → Worker** model: Planner decomposes, deterministic Slicer enriches slices, Worker orchestrates the inner loop of Coder → Verifier (deterministic) → Controller (LLM; pass/fail/retry), with a Reviewer (LLM adviser) guiding the next Coder attempt on retries. Consumes canonical docs, emits an evidence corpus.
 
 ## Validation Target (not a component)
 
