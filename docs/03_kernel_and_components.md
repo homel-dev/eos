@@ -265,7 +265,7 @@ Only two components are real today.
 
 ### 10.2 Relentless Rekrow
 
-**Status: almost-working skeleton.** A governed AI-assisted execution system built on the canonical **Planner → Slicer → Worker** model: the Planner decomposes, the deterministic Slicer enriches each slice into a bounded contract, and the Worker orchestrates an inner loop of Coder → Verifier (deterministic) → Controller (decides pass/fail/retry), with a Reviewer (LLM adviser) guiding the next Coder attempt on retries. Consumes canonical documentation, executes bounded slices through this iterative convergence loop, emits an execution evidence corpus and trajectory data.
+**Status: almost-working skeleton.** A governed AI-assisted execution system built on the canonical **Planner → Slicer → Worker** model: the Planner decomposes, the deterministic Slicer enriches each slice into a bounded contract, and the Worker orchestrates an inner loop of Coder → Verifier (deterministic) → Controller (LLM; decides pass/fail/retry), with a Reviewer (LLM adviser) guiding the next Coder attempt on retries. Consumes canonical documentation, executes bounded slices through this iterative convergence loop, emits an execution evidence corpus and trajectory data.
 
 **Invariant:** Relentless Rekrow does not own the EOS lifecycle. It executes bounded engineering work under contracts and governance.
 
