@@ -1,47 +1,56 @@
-# EOS KERNEL AND COMPONENT MODEL
+# EOS ECOSYSTEM ANALYSIS
 
-## What EOS Is — Kernel, Components, Targets, and Boundaries
+## Comparative Analysis of Adjacent Engineering and Agent Ecosystems
 
-### Foundational Engineering Specification (Document 03)
+### Foundational Engineering Specification (Document 02)
 
-*Namespace: EOS • Owner: architecture-team • Status: DRAFT*
+*Namespace: EOS • Owner: architecture-team • Status: CANONICAL*
 
 -----
 
 ## Navigation
 
-**← [Prev: Document 02 (Ecosystem Analysis)](02_ecosystem_analysis.md) | [Next: Document 04 (Execution Architecture)](04_execution_architecture.md) →**
+**← [Prev: Document 01 (Manifest)](01_manifest.md) | [Next: Document 03 (Kernel and Component Model)](03_kernel_and_components.md) →**
 
 - [0. Status, Scope, and Authority](#0-status-scope-and-authority)
 - [1. Purpose](#1-purpose)
-- [2. The Single Definition of EOS](#2-the-single-definition-of-eos)
-- [3. Kernel vs Components vs Targets](#3-kernel-vs-components-vs-targets)
-- [4. The EOS Kernel](#4-the-eos-kernel)
-- [5. What the Kernel Refuses to Do](#5-what-the-kernel-refuses-to-do)
-- [6. The Component Model](#6-the-component-model)
-- [7. Component Classes](#7-component-classes)
-- [8. Standalone vs EOS-Integrated Mode](#8-standalone-vs-eos-integrated-mode)
-- [9. Product / Infrastructure / Service Distinction](#9-product--infrastructure--service-distinction)
-- [10. Current Components](#10-current-components)
-- [11. External Validation Targets (Not Components)](#11-external-validation-targets-not-components)
-- [12. Data Products](#12-data-products)
-- [13. Critical Invariants](#13-critical-invariants)
-- [14. Minimum Viable EOS](#14-minimum-viable-eos)
-- [15. Closing Statement](#15-closing-statement)
+- [2. EOS Positioning](#2-eos-positioning)
+- [3. Ecosystem Categories](#3-ecosystem-categories)
+- [4. OpenHands Analysis](#4-openhands-analysis)
+- [5. Agency Swarm Analysis](#5-agency-swarm-analysis)
+- [6. SuperAGI Analysis](#6-superagi-analysis)
+- [7. LangChain / LangGraph Ecosystem Analysis](#7-langchain--langgraph-ecosystem-analysis)
+- [8. AutoGen Analysis](#8-autogen-analysis)
+- [9. CrewAI Analysis](#9-crewai-analysis)
+- [10. SWE-Agent Analysis](#10-swe-agent-analysis)
+- [11. Infrastructure and Control Plane Lineage](#11-infrastructure-and-control-plane-lineage)
+- [12. What EOS SHOULD Reuse](#12-what-eos-should-reuse)
+- [13. What EOS SHOULD NOT Rebuild](#13-what-eos-should-not-rebuild)
+- [14. What Appears Differentiated in EOS](#14-what-appears-differentiated-in-eos)
+- [15. Risks and Failure Modes](#15-risks-and-failure-modes)
+- [16. Strategic Recommendations](#16-strategic-recommendations)
+- [17. Final Assessment](#17-final-assessment)
 
 -----
 
 ## 0. Status, Scope, and Authority
 
-**Status:** DRAFT
-**Audience:** EOS architect, component developers, documentation maintainers
-**Change policy:**
+**Status:** FOUNDATIONAL  
+**Audience:** Architects, Engineers, Contributors
 
-- Editable while DRAFT
-- This document is the **single authority** on what EOS is, what a component is, and what is merely a target
-- All other documents defer to this one on those questions
+This document analyzes existing ecosystems adjacent to EOS.
 
-This is the anchor document. Where any other document disagrees with this one about the kernel/component/target distinction, this document wins and the other MUST be reconciled.
+The purpose of this document is:
+
+- comparative positioning
+- architectural differentiation
+- implementation borrowing analysis
+- ecosystem awareness
+- identification of reusable operational primitives
+
+This document is analytical.
+
+It does not define EOS architecture directly.
 
 [Back to top](#navigation)
 
@@ -49,289 +58,750 @@ This is the anchor document. Where any other document disagrees with this one ab
 
 ## 1. Purpose
 
-EOS documentation historically gave inconsistent answers to one question: *what actually is EOS?* The manifest implied one thing, the architecture document drew a six-box stack, and later synthesis proposed a kernel-and-component ecosystem. A reader could not get a straight answer.
+EOS does not emerge in isolation.
 
-This document settles it. It defines EOS as a small kernel plus a set of independently useful components, and it draws the hard line between what is *part of EOS*, what is a *component that uses EOS*, and what is an *external target EOS is tested against*.
+The current ecosystem already contains:
 
-[Back to top](#navigation)
+- agent frameworks
+- coding-agent systems
+- orchestration layers
+- workflow runtimes
+- SWE automation systems
+- multi-agent coordination systems
 
------
+EOS MUST understand:
 
-## 2. The Single Definition of EOS
+- what already exists
+- what is mature
+- what is reusable
+- what problems remain insufficiently solved
 
-> **EOS is an AI-native engineering lifecycle ecosystem: a small interoperability and governance kernel, plus a set of independently useful engineering components that interoperate through that kernel’s contracts, provenance, policy, and trust boundaries.**
+The purpose of this document is to:
 
-EOS is **not** a monolithic application. It is **not** a single runtime. It is **not** any one of its components.
-
-The shortest possible statement: **EOS is the contract layer that lets engineering components share governed data without becoming a monolith.**
-
-[Back to top](#navigation)
-
------
-
-## 3. Kernel vs Components vs Targets
-
-Three categories, and everything in or around EOS is exactly one of them:
-
-|Category     |Definition                                                                                    |Examples                                                                               |
-|-------------|----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-|**Kernel**   |The small shared substrate that defines how components interoperate. Owns rules, not behavior.|contract registry, artifact identity, provenance model, policy engine, trust boundaries|
-|**Component**|An independently useful system that operates standalone or inside EOS via kernel contracts.   |Memory Steward, Relentless Rekrow                                                      |
-|**Target**   |An external project EOS is used on or validated against. Not part of EOS.                     |UNICOP and its Control Plane Operator                                                  |
-
-
-> **Hard Invariant:** A target is never a component. A component is never the kernel. Conflating these is the specific failure that produced the earlier documentation confusion.
+- reduce unnecessary reinvention
+- identify architectural overlap
+- identify architectural divergence
+- clarify EOS positioning
 
 [Back to top](#navigation)
 
 -----
 
-## 4. The EOS Kernel
+## 2. EOS Positioning
 
-The kernel is small by design. It is not necessarily a single binary or service — it is the shared contract and governance substrate. It owns the *rules of interoperability*, and nothing else.
+EOS is NOT primarily:
 
-The kernel owns:
+- a chatbot
+- an autonomous-agent framework
+- a generic orchestration system
+- a code-generation wrapper
 
-- **Component identity** — what a component is, what it declares it can do
-- **Artifact identity** — stable identity for every meaningful artifact
-- **Contract registry** — how components exchange data
-- **Provenance model** — who produced what, from what inputs, under what policy
-- **Event and telemetry schema** — the shape of what components emit
-- **Lifecycle state model** — the states artifacts and runs move through
-- **Policy model** — what is allowed: read, export, train, influence, mutate
-- **Trust and federation boundary model** — what may cross which boundary
-
-The kernel answers questions, it does not perform work:
+EOS is currently better described as:
 
 ```text
-What is this artifact?
-Where did it come from?
-Which component produced it, under what policy?
-Can another component consume it?
-Can it leave this trust boundary?
-Can it be used for training?
-Can it influence planning?
+an engineering workflow substrate
+focused on governed engineering statefulness
 ```
 
+EOS focuses on:
+
+- engineering intent
+- decomposition
+- contracts
+- bounded execution
+- verification
+- governance
+- persistent engineering memory
+- provenance
+- deterministic progression
+- engineering entropy reduction
+
+EOS currently consists primarily of:
+
+- Memory Steward
+- Relentless Rekrow
+- architectural contracts
+- workflow glue
+- governance semantics
+- operational patterns
+
+EOS uses target projects such as:
+
+- UNICOP Control Plane Operator
+
+for validation and pressure-testing.
+
+> **Reconciliation note (added in refactor):** This analysis predates the formal kernel/component model. Its positioning remains accurate — EOS is a substrate with Memory Steward and Relentless Rekrow as components and UNICOP as a validation target. For the authoritative definition of the kernel, components, and targets, see Document 03. The comparisons below should be read as comparing the *EOS component ecosystem* (not a monolith) against adjacent systems.
+
+UNICOP is NOT an EOS subsystem.
+
+UNICOP is a validation target and engineering domain project.
+
 [Back to top](#navigation)
 
 -----
 
-## 5. What the Kernel Refuses to Do
+## 3. Ecosystem Categories
 
-The kernel is defined as much by its refusals as its responsibilities. This is what protects EOS from collapsing into a monolith.
+The adjacent ecosystem currently appears divided into several major categories.
 
-> **Hard Invariant:** The kernel enforces contracts. It NEVER makes engineering decisions.
+### 3.1 Autonomous Agent Frameworks
 
-The kernel MUST NOT:
+Examples:
 
-- **Decide.** It does not plan, decompose, code, verify, or review. Those are component behaviors.
-- **Execute.** It runs no engineering work. It holds no slice loop.
-- **Reason probabilistically.** No model lives in the kernel. The kernel is deterministic.
-- **Own component internals.** Components interoperate through contracts, never shared internals. A component MUST be replaceable without changing the kernel.
-- **Mutate on behalf of a component.** It authorizes; it does not act.
-- **Absorb.** The kernel never grows to swallow a component’s responsibility because that is “convenient.”
+- SuperAGI
+- CrewAI
+- Agency Swarm
+- AutoGen
 
-When in doubt about whether something belongs in the kernel, the answer is almost always no. A capability belongs in the kernel only if it is a *rule of interoperability* that every component must share. Everything else is a component.
+Primary focus:
+
+- autonomous coordination
+- agent collaboration
+- tool usage
+- conversational orchestration
+
+### 3.2 Coding-Agent Execution Platforms
+
+Examples:
+
+- OpenHands
+- SWE-Agent
+- OpenDevin lineage
+
+Primary focus:
+
+- software engineering execution
+- repository modification
+- terminal execution
+- SWE benchmarks
+- runtime sandboxes
+
+### 3.3 Workflow and State-Orchestration Systems
+
+Examples:
+
+- LangGraph
+- Temporal
+- Dagster
+- Airflow
+
+Primary focus:
+
+- stateful workflow execution
+- DAG execution
+- orchestration semantics
+- retries and state progression
+
+### 3.4 Infrastructure Control Plane Systems
+
+Examples:
+
+- Kubernetes
+- Kubernetes Operators
+- ArgoCD
+- Crossplane
+
+Primary focus:
+
+- reconciliation
+- desired-state convergence
+- bounded control loops
+- state-machine operations
+
+EOS appears to inherit concepts from multiple categories simultaneously.
 
 [Back to top](#navigation)
 
 -----
 
-## 6. The Component Model
+## 4. OpenHands Analysis
 
-A component is an independently useful engineering system. The defining test of a real component:
+Repository:
 
-> **A component MUST be able to deliver value standalone, outside EOS.** If it only makes sense inside EOS, it is not a component — it is part of the kernel or a feature of another component.
+- OpenHands
 
-Each mature component eventually declares:
+Primary characteristics:
+
+- coding-agent execution platform
+- sandboxed execution
+- SWE-oriented workflows
+- model abstraction
+- runtime portability
+- workspace lifecycle management
+
+OpenHands appears to be:
+
+- one of the most operationally serious projects in the current ecosystem
+- significantly more mature than many generic “agent” systems
+
+Strong areas:
+
+- execution sandboxes
+- terminal orchestration
+- workspace management
+- runtime abstraction
+- execution APIs
+- SWE benchmarking integration
+
+Architectural overlap with EOS:
+
+- software engineering workflows
+- execution orchestration
+- sandbox isolation
+- iterative execution loops
+
+Architectural divergence from EOS:
+
+- weaker emphasis on:
+  - provenance
+  - engineering lineage
+  - decomposition contracts
+  - entropy telemetry
+  - deterministic governance
+  - persistent engineering memory
+
+Recommendation:
+EOS SHOULD study OpenHands carefully for:
+
+- execution runtime primitives
+- sandbox orchestration
+- workspace lifecycle management
+- execution portability patterns
+
+EOS SHOULD NOT attempt to rebuild equivalent execution infrastructure unnecessarily.
+
+[Back to top](#navigation)
+
+-----
+
+## 5. Agency Swarm Analysis
+
+Repository:
+
+- Agency Swarm
+
+Primary characteristics:
+
+- organizational agent topology
+- orchestrator-worker patterns
+- communication routing
+- agent specialization
+
+Primary focus:
+
+- multi-agent collaboration
+
+Strong areas:
+
+- coordination metaphors
+- role decomposition
+- agent routing
+
+Weak areas relative to EOS:
+
+- provenance
+- deterministic progression governance
+- engineering-state lineage
+- bounded convergence semantics
+- persistent engineering memory
+
+Agency Swarm appears substantially more:
+
+- conversational
+- coordination-oriented
+- organization-inspired
+
+than:
+
+- engineering-governance-oriented
+
+EOS divergence remains significant.
+
+[Back to top](#navigation)
+
+-----
+
+## 6. SuperAGI Analysis
+
+Repository:
+
+- SuperAGI
+
+Primary characteristics:
+
+- autonomous agents
+- tool ecosystems
+- continuous loops
+- generalized automation
+
+Primary focus:
+
+- broad autonomous-agent capability
+
+Strong areas:
+
+- tool integration
+- agent ecosystems
+- operational experimentation
+
+Weak areas relative to EOS:
+
+- deterministic engineering governance
+- stateful engineering lineage
+- bounded operational semantics
+- architectural provenance
+- engineering-memory discipline
+
+SuperAGI appears significantly more:
+
+- autonomy-centric
+- generalized
+- experimentation-focused
+
+than EOS.
+
+EOS currently appears substantially more:
+
+- engineering-oriented
+- governance-oriented
+- stateful
+
+[Back to top](#navigation)
+
+-----
+
+## 7. LangChain / LangGraph Ecosystem Analysis
+
+Repositories:
+
+- LangChain
+- LangGraph
+
+Primary characteristics:
+
+- composable LLM pipelines
+- workflow graphs
+- stateful graph execution
+- tool orchestration
+
+LangGraph is particularly important because it introduces:
+
+- explicit workflow state
+- graph semantics
+- controlled transitions
+
+This overlaps meaningfully with EOS thinking.
+
+However:
+LangGraph primarily provides:
+
+- workflow execution primitives
+
+EOS attempts to additionally provide:
+
+- engineering governance
+- engineering contracts
+- provenance semantics
+- decomposition workflows
+- engineering telemetry
+- persistent engineering memory
+
+Potential reuse opportunities:
+
+- graph execution ideas
+- workflow semantics
+- bounded transition mechanics
+
+Potential risks:
+
+- overcoupling EOS identity to generic workflow ecosystems
+
+[Back to top](#navigation)
+
+-----
+
+## 8. AutoGen Analysis
+
+Repository:
+
+- AutoGen
+
+Primary characteristics:
+
+- conversational multi-agent systems
+- agent interaction protocols
+- LLM coordination
+
+Strong areas:
+
+- conversational delegation
+- role interactions
+
+Weak areas relative to EOS:
+
+- persistent operational lineage
+- engineering contracts
+- bounded verification progression
+- engineering-state governance
+
+AutoGen appears substantially more:
+
+- conversation-oriented
+- coordination-oriented
+
+than:
+
+- engineering operationalization-oriented
+
+[Back to top](#navigation)
+
+-----
+
+## 9. CrewAI Analysis
+
+Repository:
+
+- CrewAI
+
+Primary characteristics:
+
+- lightweight multi-agent orchestration
+- task delegation
+- role-based execution
+
+Primary focus:
+
+- accessible agent collaboration
+
+CrewAI appears optimized primarily for:
+
+- usability
+- accessibility
+- rapid orchestration
+
+EOS divergence remains substantial because EOS prioritizes:
+
+- governance
+- bounded execution
+- engineering memory
+- operational statefulness
+- provenance
+
+over orchestration simplicity.
+
+[Back to top](#navigation)
+
+-----
+
+## 10. SWE-Agent Analysis
+
+Repository:
+
+- SWE-Agent
+
+Primary characteristics:
+
+- software engineering automation
+- repository fixing
+- benchmark-driven engineering tasks
+
+Strong overlap with EOS:
+
+- engineering execution
+- verification loops
+- repository mutation
+
+Weak overlap:
+
+- long-lived architectural memory
+- engineering-governance systems
+- decomposition lineage
+- operational provenance
+- engineering telemetry
+
+SWE-Agent is highly relevant operationally but narrower architecturally than EOS.
+
+[Back to top](#navigation)
+
+-----
+
+## 11. Infrastructure and Control Plane Lineage
+
+EOS appears to inherit substantial architectural influence from:
+
+- Kubernetes
+- Kubernetes Operators
+- ArgoCD
+- infrastructure reconciliation systems
+- distributed systems engineering
+
+This influence appears stronger than in most current agent ecosystems.
+
+EOS concepts strongly resemble:
+
+- reconciliation loops
+- bounded convergence
+- deterministic state progression
+- controller authority
+- operational state machines
+- declarative intent systems
+
+This lineage may become one of the strongest differentiators of EOS.
+
+EOS increasingly resembles:
+
+- engineering control-plane architecture
+
+more than:
+
+- generic autonomous-agent orchestration
+
+[Back to top](#navigation)
+
+-----
+
+## 12. What EOS SHOULD Reuse
+
+EOS SHOULD strongly consider reusing:
+
+- execution sandboxing primitives
+- terminal orchestration layers
+- runtime isolation systems
+- execution workspace management
+- SWE benchmark harnesses
+- model abstraction layers
+- graph execution semantics
+- workflow runtime primitives
+
+especially from:
+
+- OpenHands
+- LangGraph
+- selected workflow ecosystems
+
+EOS SHOULD avoid rebuilding mature execution infrastructure prematurely.
+
+[Back to top](#navigation)
+
+-----
+
+## 13. What EOS SHOULD NOT Rebuild
+
+EOS SHOULD NOT initially attempt to rebuild:
+
+- generalized terminal runtimes
+- generalized sandbox engines
+- browser automation stacks
+- container orchestration substrates
+- generalized workflow DAG engines
+- generalized vector databases
+- generalized observability stacks
+
+unless EOS-specific requirements fundamentally demand it.
+
+EOS SHOULD prioritize:
+
+- architectural leverage
+- governance semantics
+- engineering workflows
+
+over infrastructure duplication.
+
+[Back to top](#navigation)
+
+-----
+
+## 14. What Appears Differentiated in EOS
+
+The following areas currently appear relatively differentiated:
+
+### 14.1 Engineering Entropy Reduction
+
+EOS treats engineering entropy itself as a measurable operational concern.
+
+### 14.2 Persistent Engineering Memory
+
+Memory Steward introduces:
+
+- architectural continuity
+- engineering-memory governance
+- stateful engineering context
+
+### 14.3 Planner/Slicer/Verifier Governance
+
+EOS operationalizes:
+
+- decomposition
+- bounded execution
+- verification-driven progression
+
+as explicit workflow primitives.
+
+### 14.4 Provenance and Lineage
+
+EOS emphasizes:
+
+- engineering trajectory lineage
+- provenance
+- reconstructability
+- explicit operational evidence
+
+### 14.5 Deterministic Escalation
+
+EOS explicitly distrusts:
+
+- uncontrolled probabilistic execution
+
+and instead emphasizes:
+
+- bounded retries
+- escalation
+- circuit breakers
+- controller authority
+
+### 14.6 Control Plane Thinking
+
+EOS inherits:
+
+- reconciliation
+- state progression
+- operational governance
+
+from infrastructure control-plane ancestry.
+
+[Back to top](#navigation)
+
+-----
+
+## 15. Risks and Failure Modes
+
+EOS currently faces substantial risks.
+
+### 15.1 Infinite Scope Expansion
+
+EOS risks becoming:
+
+- universal engineering abstraction theory
+
+instead of:
+
+- operational engineering system
+
+### 15.2 Reinventing Existing Infrastructure
+
+EOS risks wasting years rebuilding:
+
+- solved runtime problems
+- orchestration substrates
+- workflow infrastructure
+
+### 15.3 Manifesto Dominance
+
+EOS risks producing:
+
+- philosophy faster than implementation
+
+### 15.4 Overgeneralization
+
+EOS risks expanding beyond software engineering prematurely.
+
+### 15.5 Governance Overload
+
+Excessive governance may:
+
+- reduce usability
+- increase operational friction
+- prevent iteration speed
+
+[Back to top](#navigation)
+
+-----
+
+## 16. Strategic Recommendations
+
+### 16.1 Focus on Software Engineering First
+
+EOS SHOULD initially focus on:
+
+- software engineering workflows
+- infrastructure/control-plane engineering
+
+before broader engineering domains.
+
+### 16.2 Reuse Mature Runtime Infrastructure
+
+EOS SHOULD reuse:
+
+- mature execution/runtime primitives
+
+where practical.
+
+### 16.3 Prioritize Real Validation Targets
+
+EOS SHOULD continuously pressure-test itself against:
+
+- real engineering projects
+
+such as:
+
+- Relentless Rekrow
+- UNICOP Control Plane Operator
+
+### 16.4 Keep System Boundaries Explicit
+
+EOS SHOULD preserve:
+
+- bounded subsystems
+- explicit responsibilities
+- composable architecture
+
+### 16.5 Prioritize Operational Reality
+
+EOS SHOULD continuously validate:
+
+- architecture against implementation reality
+
+to prevent abstraction drift.
+
+[Back to top](#navigation)
+
+-----
+
+## 17. Final Assessment
+
+EOS currently appears to occupy a distinct position relative to adjacent ecosystems.
+
+EOS is not:
+
+- merely another autonomous-agent framework
+- merely another orchestration system
+- merely another coding assistant
+
+EOS currently appears closer to:
 
 ```text
-component_id
-component_class
-standalone_supported: true | false
-eos_integrated_supported: true | false
-input_contracts: [...]
-output_contracts: [...]
-artifact_types: [...]
-trust_boundary
-telemetry_emitted: [...]
-human_approval_boundaries: [...]
-failure_modes: [...]
+a governed engineering workflow substrate
+focused on operational statefulness,
+persistent engineering memory,
+bounded execution,
+and deterministic engineering progression
 ```
 
-This declaration is itself a kernel contract (component registry). It is illustrative here, not final schema.
+However:
+EOS remains early-stage and largely conceptual.
 
-[Back to top](#navigation)
+Its differentiation remains architectural rather than implementation-proven.
 
------
+The long-term value of EOS will depend primarily on:
 
-## 7. Component Classes
+- implementation discipline
+- operational validation
+- bounded scope management
+- successful pressure-testing against real engineering systems
 
-Six classes currently appear necessary. Not all are built; their presence here is architectural placement, not an implementation claim. Classes beyond Knowledge and Execution are **DRAFT** placement of **EXPLORATORY** components — see Document 06.
-
-### 7.1 Knowledge Components
-
-Capture, formalize, preserve, retrieve, and stabilize engineering memory. Produce canonical corpora.
-Primary: **Memory Steward**.
-
-### 7.2 Execution Components
-
-Governed implementation, bounded execution, verification-driven progression, evidence production.
-Primary: **Relentless Rekrow**.
-
-### 7.3 Learning / Training Components *(EXPLORATORY)*
-
-Dataset building, corpus admission, fine-tuning, evaluation, model lineage, release governance.
-
-### 7.4 Operational / Lifecycle Components *(EXPLORATORY)*
-
-Turn runtime evidence into governed engineering objectives. Support/SRE models, Lifecycle Architect, RCA analysis, maintenance objective generation.
-
-### 7.5 Integration Components
-
-Bridge external tools into kernel contracts: GitLab, MCP, Open WebUI, CI/CD, telemetry adapters. Plumbing — governed, bounded, observable.
-
-### 7.6 Federation / Hub Components *(EXPLORATORY)*
-
-Share, isolate, and govern data and models across instances and trust boundaries.
-
-[Back to top](#navigation)
+rather than manifesto quality alone.
 
 -----
 
-## 8. Standalone vs EOS-Integrated Mode
-
-Every serious component supports both modes. This distinction is what prevents monolithic collapse.
-
-|Component              |Standalone                            |EOS-Integrated                                                    |
-|-----------------------|--------------------------------------|------------------------------------------------------------------|
-|Memory Steward         |brainstorm → engineering memory / docs|produces planner-ready canonical corpus, emits knowledge artifacts|
-|Relentless Rekrow      |canonical docs → software + evidence  |consumes canonical corpus, emits trajectory data into EOS         |
-|Trainer *(EXPLORATORY)*|dataset + compute → fine-tuned model  |consumes governed EOS corpora, emits models with lineage          |
-
-[Back to top](#navigation)
-
------
-
-## 9. Product / Infrastructure / Service Distinction
-
-- **Products** — user-facing, standalone value: Memory Steward, Relentless Rekrow.
-- **Infrastructure** — enables EOS, not primary user-facing: contract registry, artifact registry, policy engine, model registry.
-- **Services** — operated centrally or privately: community hub, hosted training, enterprise support.
-
-This distinction matters for the open / community / enterprise strategy (Document 06, EXPLORATORY).
-
-[Back to top](#navigation)
-
------
-
-## 10. Current Components
-
-Only two components are real today.
-
-### 10.1 Memory Steward
-
-**Status: working concept.** A deterministic memory/cognitive control plane. Not a chatbot. Separates model reasoning from memory and policy via a dual-plane design (read-only user/data plane; write-exclusive control/steward plane). Memory admission is asynchronous; memory is stored as atomic facts carrying scope and confidence, not conversation dumps. Aims to prevent probabilistic drift and memory corruption.
-
-**Invariant:** Memory Steward does not build software. It produces and preserves structured engineering intent.
-
-### 10.2 Relentless Rekrow
-
-**Status: almost-working skeleton.** A governed AI-assisted execution system: Planner → Slicer → Coder → Verifier → Reviewer → Controller. Consumes canonical documentation, executes bounded slices through an iterative convergence loop, emits an execution evidence corpus and trajectory data.
-
-**Invariant:** Relentless Rekrow does not own the EOS lifecycle. It executes bounded engineering work under contracts and governance.
-
-The canonical Memory-Steward → RR handshake — canonical corpus in, evidence corpus out — is the **proof of life for EOS**. If those two components exchange one real artifact with provenance intact, the kernel thesis holds.
-
-[Back to top](#navigation)
-
------
-
-## 11. External Validation Targets (Not Components)
-
-> **Hard Invariant:** A validation target is an external project EOS is tested against. It is NEVER an EOS component and MUST NOT appear in EOS architecture as a subsystem.
-
-### 11.1 UNICOP — Unified Infrastructure Control Plane
-
-UNICOP is a **separate product**: a large infrastructure control plane with many moving parts. Those parts are managed and lifecycled by the **UNICOP Control Plane Operator**, a Golang Kubernetes-style operator that is a subproject of UNICOP.
-
-The UNICOP Control Plane Operator is the concrete, hard, real project on which Relentless Rekrow is pressure-tested. The difficulty of building that operator with AI assistance is, historically, *why Relentless Rekrow exists* — RR emerged from that wall.
-
-UNICOP’s role in EOS documentation is therefore exactly one sentence of standing: **it is the primary external validation target against which RR is proven, and nothing more.** It is not a layer, subsystem, or component of EOS.
-
-The clearest success test EOS has: *can Relentless Rekrow build the UNICOP Control Plane Operator under governance?* That is a concrete north star, not an abstract thesis.
-
-[Back to top](#navigation)
-
------
-
-## 12. Data Products
-
-EOS is fundamentally a data-producing engineering lifecycle. The important output is not only code. Each corpus is a governed data product with its own retention and admission rules.
-
-|Corpus                        |Produced by                         |Status     |
-|------------------------------|------------------------------------|-----------|
-|Canonical Documentation Corpus|Memory Steward + human              |real       |
-|Execution Evidence Corpus     |Relentless Rekrow                   |real       |
-|Trajectory Corpus             |RR controllers, verifiers, reviewers|emerging   |
-|Production Telemetry Corpus   |deployed products                   |EXPLORATORY|
-|Incident / RCA Corpus         |operators, SRE models, humans       |EXPLORATORY|
-|Training / Evaluation Corpus  |dataset builder, trainer            |EXPLORATORY|
-
-Detail on trajectory: Document 05. Detail on the EXPLORATORY corpora: Document 06.
-
-[Back to top](#navigation)
-
------
-
-## 13. Critical Invariants
-
-These govern the kernel and all components.
-
-1. **Human authority is authoritative.** EOS amplifies engineering judgment; it does not replace it.
-1. **Probabilistic systems are untrusted inputs.** LLM output passes through contracts, schema validation, verification, review, controller decisions, and policy gates before it is authoritative.
-1. **Telemetry is evidence, not command.** Telemetry never directly mutates a product. Evidence → diagnosis → objective → governed execution.
-1. **Training is governed.** EOS data is not automatically training data. Corpus admission MUST be explicit.
-1. **Components remain bounded.** EOS MUST NOT collapse components into one monolith. Component independence is strategic.
-1. **Federation is deny-by-default.** No data leaves a trust boundary unless explicitly allowed.
-1. **Provenance is mandatory.** Every meaningful artifact MUST be attributable.
-1. **Open core is not crippled.** Enterprise value comes from governance, scale, privacy, federation, and support — never from deliberately weakening the open architecture.
-
-[Back to top](#navigation)
-
------
-
-## 14. Minimum Viable EOS
-
-The hard question is not whether EOS is conceptually valid. It is: *what is the smallest EOS that proves the thesis?*
-
-The true minimum is three things, not ten:
-
-1. **Memory Steward emits a canonical corpus** (one real document with provenance).
-1. **Relentless Rekrow consumes that corpus** and emits an execution evidence corpus.
-1. **One artifact registry convention** ties them together with provenance intact.
-
-That is the kernel proving it can make two components interoperate. It demonstrates the core loop:
-
-```text
-docs -> build -> evidence
-```
-
-Everything else — training, lifecycle, federation, hub — is downstream of that handshake working *even once*. Those are EXPLORATORY (Document 06) until this minimum is real.
-
-> **Warning:** Earlier drafts described a “minimum viable EOS” as a ten-item list that was, in fact, the entire vision with the word “minimal” attached. That is not a minimum. The three items above are.
-
-[Back to top](#navigation)
-
------
-
-## 15. Closing Statement
-
-This document matters because it ends the project’s central ambiguity. EOS is a small kernel plus independently useful components, validated against external targets. The kernel enforces contracts and refuses to decide. Components deliver standalone value and interoperate through the kernel. Targets like UNICOP are what EOS is proven against, never part of it.
-
-Hold this line and EOS stays coherent as it grows. Lose it and EOS becomes the platform soup its own analysis warns against.
-
------
-
-**END OF DOCUMENT 03**
+**END OF DOCUMENT 02**
