@@ -1,8 +1,8 @@
-# EOS EXECUTION ARCHITECTURE
+# ENGINEERING TRAJECTORY INTELLIGENCE
 
-## Governed Execution, Slice Model, and Architectural Mechanisms
+## Telemetry, Convergence Data, and Engineering Workflow Learning
 
-### Foundational Engineering Specification (Document 04)
+### Foundational Engineering Specification (Document 05)
 
 *Namespace: EOS • Owner: architecture-team • Status: DRAFT*
 
@@ -10,40 +10,40 @@
 
 ## Navigation
 
-**← [Prev: Document 03 (Kernel and Component Model)](03_kernel_and_components.md) | [Next: Document 05 (Engineering Trajectory Intelligence)](05_engineering_trajectory_intelligence.md) →**
+**← [Prev: Document 04 (Execution Architecture)](04_execution_architecture.md) | [Next: Document 06 (Horizon)](06_horizon.md) →**
 
 - [0. Status, Scope, and Authority](#0-status-scope-and-authority)
 - [1. Purpose](#1-purpose)
 - [2. Architectural Positioning](#2-architectural-positioning)
-- [3. Core Architectural Principles](#3-core-architectural-principles)
-- [4. The Knowledge → Execution Handshake](#4-the-knowledge--execution-handshake)
-- [5. Memory Steward (Execution View)](#5-memory-steward-execution-view)
-- [6. Relentless Rekrow (Execution View)](#6-relentless-rekrow-execution-view)
-- [7. Engineering Workflow Model](#7-engineering-workflow-model)
-- [8. Planner Objective Model](#8-planner-objective-model)
-- [9. Slice Execution Model](#9-slice-execution-model)
-- [10. The Iterative Convergence Loop](#10-the-iterative-convergence-loop)
-- [11. Verification and Governance Model](#11-verification-and-governance-model)
-- [12. Engineering Artifact Model](#12-engineering-artifact-model)
-- [13. Architectural Mechanisms](#13-architectural-mechanisms)
-- [14. MCP and Tooling Integration](#14-mcp-and-tooling-integration)
-- [15. Architectural Constraints](#15-architectural-constraints)
-- [16. Closing Statement](#16-closing-statement)
+- [3. Engineering Trajectory Definition](#3-engineering-trajectory-definition)
+- [4. Why Trajectory Data Matters](#4-why-trajectory-data-matters)
+- [5. Telemetry Sources](#5-telemetry-sources)
+- [6. Relentless Rekrow Telemetry](#6-relentless-rekrow-telemetry)
+- [7. Memory Steward Telemetry](#7-memory-steward-telemetry)
+- [8. Trajectory Persistence Model](#8-trajectory-persistence-model)
+- [9. Engineering Entropy Metrics](#9-engineering-entropy-metrics)
+- [10. Reinforcement and Optimization (Bounded)](#10-reinforcement-and-optimization-bounded)
+- [11. Governance Constraints](#11-governance-constraints)
+- [12. Risks and Failure Modes](#12-risks-and-failure-modes)
+- [13. Relationship to the Horizon](#13-relationship-to-the-horizon)
+- [14. Closing Statement](#14-closing-statement)
 
 -----
 
 ## 0. Status, Scope, and Authority
 
 **Status:** DRAFT
-**Audience:** Component developers, RR/MS implementers, architects
+**Audience:** Architects, Engineers, Contributors
 **Change policy:**
 
 - Editable while DRAFT
-- Defers to Document 03 on kernel/component/target definitions
+- Defers to Document 03 on kernel/component definitions
 
-This document defines *how execution works* inside EOS: the governed workflow, the slice model, the convergence loop, and the architectural mechanisms (lineage, escalation, isolation) that make bounded execution safe. It is the architecture beneath the philosophy of Document 01 and the structure of Document 03.
+This document defines engineering trajectory intelligence: the telemetry and convergence data that EOS execution produces, how it is persisted, and how it may bounded-improve EOS components.
 
-Implementation-level detail for Relentless Rekrow Phase 1 lives in the RR Phase 1 Implementation Plan, which is the authority for what is being built now. This document is the authority for the architectural shape.
+**Scope correction:** This document was previously overloaded with four distinct topics — trajectory intelligence, product lifecycle support, community hub, and enterprise federation. The latter three are speculative and have been moved to Document 06 (Horizon), stamped EXPLORATORY. This document now covers **trajectory intelligence only** — the data produced inside a single EOS instance.
+
+This document does not define exact training pipelines, storage schemas, or ML implementations.
 
 [Back to top](#navigation)
 
@@ -51,7 +51,9 @@ Implementation-level detail for Relentless Rekrow Phase 1 lives in the RR Phase 
 
 ## 1. Purpose
 
-EOS execution transforms a canonical engineering corpus into verified software plus a governed evidence corpus. This document specifies the architecture of that transformation: the roles, the contracts between them, the loop they execute, and the invariants that keep probabilistic generation bounded.
+EOS workflows naturally generate engineering telemetry, execution lineage, convergence data, verification evidence, correction loops, retry patterns, and full engineering trajectories. This data is operationally valuable.
+
+EOS treats engineering trajectory intelligence as a first-class architectural direction rather than incidental telemetry. The purpose here is to define why it matters, how it is captured and persisted, how it may bounded-improve components, and the governance that keeps it safe.
 
 [Back to top](#navigation)
 
@@ -59,274 +61,193 @@ EOS execution transforms a canonical engineering corpus into verified software p
 
 ## 2. Architectural Positioning
 
-EOS execution sits between knowledge and learning:
+Trajectory intelligence is a cross-component concern. It is not solely a Memory Steward concern, solely a Relentless Rekrow concern, nor merely observability. It spans both components plus workflow governance and verification.
+
+In Document 03 terms, the Trajectory Corpus is a **data product** (Document 03 §12) produced across RR’s controllers, verifiers, and reviewers. It is consumed by — but distinct from — the EXPLORATORY learning components.
 
 ```text
-canonical corpus (knowledge)
-  -> governed execution (this document)
-  -> evidence + trajectory corpus
-  -> trajectory intelligence (Document 05)
-```
-
-Execution is performed by **components** (primarily Relentless Rekrow) operating under **kernel** contracts (Document 03). The kernel governs; the component executes.
-
-[Back to top](#navigation)
-
------
-
-## 3. Core Architectural Principles
-
-### 3.1 Bounded Systems
-
-Every execution unit operates within explicit boundaries: paths, sizes, retries, runtime, context.
-
-### 3.2 Explicit Contracts
-
-Every role input and output is contract-validated against a schema before it is trusted.
-
-### 3.3 Deterministic Governance
-
-Probabilistic systems propose. Deterministic systems decide whether progression is allowed.
-
-### 3.4 Persistent Engineering Memory
-
-Execution consumes and produces persistent memory; nothing meaningful is ephemeral.
-
-### 3.5 Verification-Driven Progression
-
-No state advances without evidence. Verification is mandatory, not optional.
-
-### 3.6 Human Authority Preservation
-
-When bounds are exhausted, control returns to the human architect.
-
-[Back to top](#navigation)
-
------
-
-## 4. The Knowledge → Execution Handshake
-
-This handshake is the proof of life for EOS (Document 03 §10, §14).
-
-```text
-Memory Steward
-  -> canonical documentation corpus
-      (specification, constraints, decisions, invariants,
-       acceptance criteria, planner directives)
-  -> [kernel: artifact identity + provenance]
-  -> Relentless Rekrow Planner
-```
-
-> **Hard Invariant:** Relentless Rekrow consumes canonical documentation. It does not consume raw conversational brainstorming. The crystallization from informal intent to formal specification is a human-authored step performed in the Knowledge component.
-
-The corpus crossing this boundary MUST carry kernel-assigned artifact identity and provenance, so every downstream artifact can be traced back to the intent that produced it.
-
-[Back to top](#navigation)
-
------
-
-## 5. Memory Steward (Execution View)
-
-In the execution path, Memory Steward is the producer of the canonical corpus. Architecture summarized (full component definition in Document 03 §10.1):
-
-- Cognitive control plane, not a chatbot
-- Dual-plane: read-only user/data plane; write-exclusive control/steward plane
-- Asynchronous memory admission
-- Atomic memory facts with scope and confidence
-- Designed to prevent probabilistic drift and memory corruption
-
-Execution outputs consumed by RR: canonical product documentation, decision history, architectural rationale, structured context packs, planner directives, and the planner-ready project corpus.
-
-[Back to top](#navigation)
-
------
-
-## 6. Relentless Rekrow (Execution View)
-
-Relentless Rekrow is the execution component. Roles:
-
-|Role          |Responsibility                                                          |
-|--------------|------------------------------------------------------------------------|
-|**Planner**   |Decompose canonical corpus into bounded slices under directives         |
-|**Slicer**    |Convert planner objectives into executable bounded contracts            |
-|**Coder**     |Produce real patches (unified diffs) per slice attempt                  |
-|**Verifier**  |Apply patches and produce evidence from real command execution          |
-|**Reviewer**  |Evaluate evidence; never override verifier facts                        |
-|**Controller**|Deterministic progression authority; decides approve/retry/fail/escalate|
-
-
-> **Hard Invariant:** Relentless Rekrow does not own the EOS lifecycle. It executes bounded engineering work under contracts and governance. (Stated once; not duplicated.)
-
-[Back to top](#navigation)
-
------
-
-## 7. Engineering Workflow Model
-
-```text
-canonical corpus
-  -> Planner: objectives + directives -> decomposition
-  -> Slicer: bounded executable slice contracts
-  -> for each slice (in dependency order):
-       -> iterative convergence loop (section 10)
-  -> run reaches completion or controlled failure
-  -> evidence + trajectory persisted with provenance
+execution (Document 04)
+  -> trajectory corpus (this document)
+  -> [bounded] component improvement
+  -> [EXPLORATORY] cross-instance learning (Document 06)
 ```
 
 [Back to top](#navigation)
 
 -----
 
-## 8. Planner Objective Model
+## 3. Engineering Trajectory Definition
 
-The Planner operates from two inputs: the project specification and **planner directives** — the engineering culture applied to decomposition.
+An engineering trajectory is the operational evolution path of engineering work through governed workflows.
 
-Planner directives MAY include:
+A trajectory MAY include documentation evolution, planner objectives, slice generation, execution attempts, diffs, verifier outcomes, retries, convergence patterns, escalation events, architectural decisions, and controller decisions.
 
-- **Planning strategy** — linear sequential, foundation-first, reference propagation
-- **Development methodology** — TDD, BDD, interface-first, documentation-first
-- **Quality posture** — conservative vs aggressive
-- **Coupling preference** — loose coupling enforced vs pragmatic coupling allowed
-- **Integration approach** — incremental with dependency ordering vs final-integration assembly
-
-> **Hard Invariant:** Planner directives are provided by the human architect or default configuration, rendered into the planner prompt as structured guidance. The system MUST NOT invent engineering culture silently.
-
-Directives become part of the canonical corpus and the trajectory data, and therefore part of future training labels (Document 05, Document 06).
+Trajectories are stateful, iterative, evidence-bearing, and operationally meaningful. EOS treats them as first-class operational artifacts.
 
 [Back to top](#navigation)
 
 -----
 
-## 9. Slice Execution Model
+## 4. Why Trajectory Data Matters
 
-Slices are bounded executable engineering units. Each slice carries: explicit targets, allowed paths, expected changed paths, verification commands, impact class, acceptance criteria, dependencies, and iteration limits.
+Trajectory data may become more operationally valuable than generated code alone, because it contains engineering reasoning structure, convergence behavior, failure signatures, workflow inefficiencies, decomposition effectiveness, and verification patterns.
 
-### 9.1 Slice Dependency Model — DAG not Linear Sequence
+This is the concrete expression of the manifest thesis (Document 01 §4): **the asset is the decision trail, not the code.** Code is the output; the trajectory is the reusable intelligence.
 
-Slices MAY declare a `depends_on` relationship, forming a dependency DAG. This enables parallel execution of independent slices, guaranteed ordering for dependent slices, and integration slices that assemble prior accepted outputs.
-
-### 9.2 Reference Propagation
-
-When a slice’s directive includes reference propagation, later slices receive accepted output from prior slices as reference implementations in their coder context — propagating certified-quality patterns. This is pattern inheritance, not functional dependency.
-
-### 9.3 Hierarchical Planner
-
-For large projects, decomposition is itself a multi-step reasoning problem. A hierarchical planner operates in two passes: a coarse planner breaks the project into major components; a fine planner decomposes each component into bounded slices. This reduces context pressure and improves decomposition quality.
+Trajectory intelligence MAY improve planner quality, slicer quality, verification quality, governance quality, engineering-memory retrieval, convergence efficiency, and workflow stability.
 
 [Back to top](#navigation)
 
 -----
 
-## 10. The Iterative Convergence Loop
+## 5. Telemetry Sources
 
-> EOS execution is not a pipeline. It is a bounded convergence system.
+EOS telemetry MAY originate from Memory Steward, Relentless Rekrow, verifiers, controllers, execution runtimes, workflow systems, and engineering tooling.
+
+Potential telemetry types: execution duration, retry counts, convergence steps, verification outcomes, escalation events, oscillation signatures, decomposition metrics, and context-selection effectiveness.
+
+[Back to top](#navigation)
+
+-----
+
+## 6. Relentless Rekrow Telemetry
+
+RR is the richest trajectory source. Per slice and per attempt it emits:
+
+- planner decomposition and directives applied
+- slice definitions and dependency structure
+- coder attempts and patch diffs
+- verifier results and evidence references
+- reviewer verdicts and quality signals
+- controller decisions and progress/oscillation signals
+- retry histories, escalation records, and replan events
+- time-to-acceptance and convergence efficiency
+
+This is the data that makes the iterative convergence loop (Document 04 §10) measurable rather than opaque.
+
+[Back to top](#navigation)
+
+-----
+
+## 7. Memory Steward Telemetry
+
+Memory Steward emits retrieval effectiveness, admission decisions, context-reconstruction quality, memory-atom scope and confidence evolution, and documentation-corpus change history.
+
+This telemetry indicates whether the canonical corpus that seeds execution is improving, and which retrieved context actually contributed to convergence.
+
+[Back to top](#navigation)
+
+-----
+
+## 8. Trajectory Persistence Model
+
+Trajectories are persisted as governed artifacts with kernel-assigned identity and provenance (Document 04 §12). The trajectory corpus MUST be retained, not treated as disposable execution logs — its value compounds over time and underwrites every downstream learning capability.
+
+A trajectory corpus entry MAY capture the full chain:
 
 ```text
-Not:  planner -> coder -> verifier -> done
-But:  planner -> slice -> bounded convergence loop -> deterministic controller -> verified slice
+canonical intent
+  -> planner objective + directives
+  -> slice decomposition (DAG)
+  -> execution attempts (per iteration, per provider tier)
+  -> patch diffs + provenance
+  -> verifier results + evidence
+  -> reviewer verdicts + quality signals
+  -> controller decisions + progress signals
+  -> convergence or escalation outcome
 ```
 
-Per slice:
+[Back to top](#navigation)
 
-```text
-create language-aware workspace
-initialize slice-local Git history
-attempt_number = 1
-while attempt_number <= max_iterations:
-    coder attempt (with feedback packet if attempt > 1)
-    apply patch in isolated workspace
-    detect changed paths from git (not coder-declared)
-    policy gate
-    run verification commands -> evidence
-    commit attempt snapshot to slice Git
-    reviewer evaluates evidence
-    controller evaluates progress + oscillation signals:
-        APPROVE / RETRY / FAIL / ESCALATE
-exit loop -> verified, failed, or escalated
-```
+-----
 
-Loop mechanics — feedback packets, progress detection, admission policy, provider escalation, run-level failure intelligence, warm replan — are specified in detail in the RR Phase 1 Implementation Plan. Each carries a hard invariant bounding its autonomy.
+## 9. Engineering Entropy Metrics
+
+EOS SHOULD measure engineering friction as telemetry rather than leaving it invisible:
+
+- planner-to-worker intent drift
+- retry exhaustion rates
+- oscillation frequency
+- verification instability
+- dependency deadlocks
+- slice convergence efficiency
+- context-explosion frequency
+- artifact churn rates
+- cumulative run-level failure ratio
+
+These metrics feed decomposition improvement, slice-boundary optimization, retry guidance, and the run-level failure intelligence specified in the RR Phase 1 plan.
 
 [Back to top](#navigation)
 
 -----
 
-## 11. Verification and Governance Model
+## 10. Reinforcement and Optimization (Bounded)
 
-EOS treats probabilistic execution as inherently untrusted. Verification is therefore mandatory and MAY include compilation, tests, schema validation, static analysis, policy evaluation, execution-state inspection, and behavioral verification.
+Trajectory data MAY be used to improve EOS components. Within a single instance, this is bounded optimization — improving retrieval, prompts, decomposition heuristics, and routing from observed convergence patterns.
 
-Governance systems SHOULD enforce bounded retries, escalation paths, deterministic failure handling, and progression constraints. Controllers SHOULD preserve explicit operational authority.
+> **Hard Invariant:** Optimization systems MUST remain observable, attributable, reversible, and bounded. Human architectural authority MUST remain authoritative over any component evolution. Opaque reinforcement, unverifiable optimization loops, and governance-free model mutation are prohibited.
 
-> **Hard Invariant:** No workflow state advances without successful contract validation. Reviewer and controller systems MUST NOT silently override observed verifier facts.
+Cross-instance learning, fine-tuning, and federated training are **EXPLORATORY** and are specified in Document 06. They are not part of single-instance trajectory intelligence.
 
-[Back to top](#navigation)
-
------
-
-## 12. Engineering Artifact Model
-
-Artifacts are the evidence backbone. Every role output is stored as an artifact with kernel-assigned identity and provenance.
-
-Each artifact carries: artifact_id, run_id, slice_id (nullable), iteration_id (nullable), artifact_type, storage_uri, content_hash (SHA-256), content_size, producer, created_at, retention_class, and provenance.
-
-> **Hard Invariant:** Every meaningful artifact MUST have a content hash and be attributable. Controller decisions MUST reference the artifact IDs of the evidence they rest on.
+> **Warning:** Self-improvement from a system’s own “successful” trajectories carries a specific danger: the system can become good at producing trajectories that *look* successful by its own metrics. The corpus admission gate (Document 06) is the primary defense, and it is safety-critical, not a governance footnote.
 
 [Back to top](#navigation)
 
 -----
 
-## 13. Architectural Mechanisms
+## 11. Governance Constraints
 
-These mechanisms were previously embedded in the manifest. They are architecture, not philosophy, and live here. Several are aspirational; status is marked per mechanism.
-
-### 13.1 Cryptographic Lineage and Provenance *(DRAFT)*
-
-Persistent artifacts SHOULD support tamper-evident lineage: hash-chained artifacts, signed controller decisions, Merkle-linked execution histories. Purpose: deterministic replayability, historical integrity, drift detection. Silent historical drift is a structural integrity failure.
-
-### 13.2 Meta-Observability and Entropy Metrics *(DRAFT)*
-
-EOS execution SHOULD measure planner-to-worker intent drift, retry exhaustion rates, oscillation frequency, verification instability, dependency deadlocks, slice convergence efficiency, and artifact churn. Engineering friction SHOULD become measurable telemetry rather than invisible overhead. (Consumed by Document 05.)
-
-### 13.3 Zero-Trust State Isolation *(DRAFT)*
-
-Worker execution SHOULD occur inside isolated bounded environments: ephemeral workspaces, container/namespace/microVM isolation, capability dropping, syscall filtering, resource quotas, restricted filesystem scopes. Execution MUST NOT exceed slice boundaries or silently escape governance.
-
-### 13.4 Deterministic Escalation (Circuit Breaker) *(DRAFT)*
-
-Autonomous loops can stall, oscillate, deadlock, diverge, or exhaust retries. EOS requires explicit escalation transitions that halt autonomous progression, preserve evidence and lineage, and return authority to the human. EOS MUST avoid infinite retry loops, silent degradation, and hidden failure accumulation.
-
-> **Hard Invariant:** Autonomous execution MUST fail upward predictably rather than drift indefinitely.
+- Trajectory data is governed engineering data, subject to retention and access policy.
+- Trajectory data is not automatically training data (Document 03 §13.4).
+- Provenance is mandatory for every trajectory artifact.
+- Optimization derived from trajectory data MUST be reversible.
 
 [Back to top](#navigation)
 
 -----
 
-## 14. MCP and Tooling Integration
+## 12. Risks and Failure Modes
 
-Integration components bridge external tools into kernel contracts (Document 03 §7.5): GitLab, GitHub, MCP tools, Open WebUI, CI/CD, telemetry adapters.
+### 12.1 Reinforcement Drift
 
-> **Hard Invariant:** Integration components are plumbing. They MUST be governed, observable, and bounded. They MUST NOT become uncontrolled mutation channels. For example, repository or documentation writes (e.g. Memory Steward updating a GitLab doc) require explicit human approval policy.
+Optimizing measurable metrics (convergence speed, retry count) instead of true engineering quality. Mitigation: quality gates, admission criteria, reversibility.
+
+### 12.2 Telemetry Explosion
+
+Unbounded telemetry volume overwhelming storage and signal. Mitigation: retention classes, sampling, entropy-metric focus over raw logs.
+
+### 12.3 Metric Gaming
+
+Components learning to satisfy metrics rather than goals. Mitigation: separation of verifier facts from reviewer judgment; admission gate.
+
+### 12.4 Provenance Loss
+
+Trajectory data without attribution is untrustworthy and unusable for learning. Mitigation: mandatory kernel-assigned provenance.
 
 [Back to top](#navigation)
 
 -----
 
-## 15. Architectural Constraints
+## 13. Relationship to the Horizon
 
-- EOS execution operates on canonical input, not raw conversation.
-- Probabilistic output is never authoritative without verification.
-- State transitions require contract validation.
-- Autonomy is always bounded and always reversible to human control.
-- Execution components do not absorb kernel responsibilities or other components.
+This document stops at the boundary of a single EOS instance. The moment trajectory data is shared, fine-tuned on, or exchanged across instances, it enters EXPLORATORY territory:
+
+- product lifecycle intelligence and support models
+- training and model improvement
+- community hub and trajectory exchange
+- enterprise federation and trust mesh
+- community compute contribution
+
+All of that is preserved in Document 06, stamped EXPLORATORY. Nothing was lost in trimming this document — it was relocated to its correct maturity level.
 
 [Back to top](#navigation)
 
 -----
 
-## 16. Closing Statement
+## 14. Closing Statement
 
-This document defines how EOS turns canonical intent into verified software under governance. The convergence loop, the role contracts, and the architectural mechanisms together make probabilistic generation safe enough to trust with real engineering work — including the external validation target that motivated the system. Execution produces not only software but the evidence and trajectory corpora that the rest of EOS learns from.
+Engineering trajectory intelligence is the mechanism by which EOS makes good on its core thesis: that the decision trail behind engineering work is a durable, reusable asset. Within a single instance, that data makes the convergence loop measurable and enables bounded, reversible improvement. Its larger potential — cross-instance learning — is real but speculative, and is held at arm’s length in the Horizon document until the single-instance foundation is proven.
 
 -----
 
-**END OF DOCUMENT 04**
+**END OF DOCUMENT 05**
