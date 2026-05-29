@@ -91,7 +91,7 @@ The single most important discipline for EOS is preventing this document’s con
 
 A high-value application of trajectory intelligence: a product lifecycle support model.
 
-When EOS executes a project to completion, the artifact corpus contains planner decompositions with architectural intent, coder diffs with per-slice provenance, verifier results, reviewer verdicts, and controller decisions. This corpus is richer than source code — it is the decision trail behind the code.
+When EOS executes a project to completion, the artifact corpus contains planner decompositions with architectural intent, coder diffs with per-slice provenance, verifier results, controller decisions, and reviewer guidance. This corpus is richer than source code — it is the decision trail behind the code.
 
 A model grounded in this corpus could diagnose production issues with full architectural context, answer “why was this designed this way,” identify which tests verify which requirements, and suggest fixes informed by original intent.
 
@@ -150,7 +150,7 @@ next:  improved role models -> better execution
 
 A first-class learning component class (Document 03 §7.3) would include: dataset builder, fine-tuning service, model trainer, evaluator, benchmark service, model registry, corpus admission controller, regression gate, and release controller.
 
-**Role-specific models** EOS might eventually train: Planner, Coder, Verifier, Reviewer, Controller-support, Lifecycle Architect, SRE/support, and documentation-amendment models.
+**Role-specific models** EOS might eventually train (the LLM-backed roles only — the Slicer and Verifier are deterministic and have no model to train): Planner, Coder, Controller, Reviewer, Lifecycle Architect, SRE/support, and documentation-amendment models.
 
 **Training governance** MUST include corpus admission, sanitization, labeling, provenance preservation, role targeting, quality scoring, regression evaluation, model lineage, rollback, release gates, and separation of private/sanitized datasets.
 
