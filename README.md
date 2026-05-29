@@ -70,12 +70,6 @@ See **[Document 03](docs/03_kernel_and_components.md)** for the authoritative de
 
 -----
 
-## Status Vocabulary
-
-Every document carries a status so maturity is never implied: `FOUNDATIONAL`, `CANONICAL`, `DRAFT`, `WORKING`, `EXPLORATORY`, `DEPRECATED`. Speculation is welcome anywhere, provided it is stamped honestly. See [Document 00 §2](docs/00_style_guide.md).
-
------
-
 ## Minimum Viable EOS
 
 The smallest thing that proves the thesis is three items, not a platform:
