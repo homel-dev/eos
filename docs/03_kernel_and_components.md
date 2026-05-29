@@ -82,6 +82,33 @@ Three categories, and everything in or around EOS is exactly one of them:
 
 > **Hard Invariant:** A target is never a component. A component is never the kernel. Conflating these is the specific failure that produced the earlier documentation confusion.
 
+```mermaid
+flowchart TB
+    subgraph EOS["EOS"]
+        direction TB
+        subgraph KERN["Kernel — rules of interoperability, never behavior"]
+            K["contracts · artifact identity · provenance<br/>policy · trust boundaries"]
+        end
+        subgraph COMP["Components — independently useful, interoperate via kernel"]
+            MS["Memory Steward<br/><i>knowledge</i>"]
+            RR["Relentless Rekrow<br/><i>execution</i>"]
+        end
+        COMP -.->|declare identity, exchange artifacts through| KERN
+    end
+
+    TGT["UNICOP Control Plane Operator<br/><b>validation target</b> — NOT part of EOS"]
+    RR ==>|"is tested against"| TGT
+
+    classDef kernel fill:#1f2937,stroke:#f59e0b,color:#fff,stroke-width:2px;
+    classDef comp fill:#1f2937,stroke:#60a5fa,color:#fff,stroke-width:2px;
+    classDef target fill:#111827,stroke:#ef4444,color:#fff,stroke-width:2px,stroke-dasharray:5 5;
+    class K kernel;
+    class MS,RR comp;
+    class TGT target;
+```
+
+*The dashed red box sits outside EOS on purpose — UNICOP is what EOS is proven against, never part of it. The kernel holds the rules; components do the work.*
+
 [Back to top](#navigation)
 
 -----
@@ -238,7 +265,7 @@ Only two components are real today.
 
 ### 10.2 Relentless Rekrow
 
-**Status: almost-working skeleton.** A governed AI-assisted execution system: Planner → Slicer → Coder → Verifier → Reviewer → Controller. Consumes canonical documentation, executes bounded slices through an iterative convergence loop, emits an execution evidence corpus and trajectory data.
+**Status: almost-working skeleton.** A governed AI-assisted execution system built on the canonical **Planner → Slicer → Worker** model: the Planner decomposes, the deterministic Slicer enriches each slice into a bounded contract, and the Worker orchestrates an inner loop of Coder → Verifier (deterministic) → Controller (decides pass/fail/retry), with a Reviewer (LLM adviser) guiding the next Coder attempt on retries. Consumes canonical documentation, executes bounded slices through this iterative convergence loop, emits an execution evidence corpus and trajectory data.
 
 **Invariant:** Relentless Rekrow does not own the EOS lifecycle. It executes bounded engineering work under contracts and governance.
 
