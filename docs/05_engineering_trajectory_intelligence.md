@@ -143,17 +143,32 @@ This telemetry indicates whether the canonical corpus that seeds execution is im
 
 Trajectories are persisted as governed artifacts with kernel-assigned identity and provenance (Document 04 §12). The trajectory corpus MUST be retained, not treated as disposable execution logs — its value compounds over time and underwrites every downstream learning capability.
 
-A trajectory corpus entry MAY capture the full chain:
+A trajectory corpus entry MAY capture the full chain. Note the per-attempt loop ordering matches the canonical execution loop (Document 04): within each attempt, Coder → Verifier → Controller, and the Reviewer’s guidance is recorded on the retry edge into the next attempt.
+
+```mermaid
+flowchart TB
+    CI["canonical intent"] --> PO["planner objective + directives"]
+    PO --> SD["slice decomposition (DAG)"]
+    SD --> A1["attempt 1: coder diff → verifier evidence → controller decision"]
+    A1 -->|retry: reviewer guidance recorded| A2["attempt 2: coder diff → verifier evidence → controller decision"]
+    A2 -->|retry: reviewer guidance recorded| AN["attempt N ..."]
+    AN --> OUT["convergence or escalation outcome"]
+
+    classDef n fill:#1f2937,stroke:#a78bfa,color:#fff,stroke-width:2px;
+    class CI,PO,SD,A1,A2,AN,OUT n;
+```
+
+Per-attempt detail captured:
 
 ```text
 canonical intent
   -> planner objective + directives
   -> slice decomposition (DAG)
-  -> execution attempts (per iteration, per provider tier)
-  -> patch diffs + provenance
-  -> verifier results + evidence
-  -> reviewer verdicts + quality signals
-  -> controller decisions + progress signals
+  -> per attempt (per iteration, per provider tier):
+       coder diff + provenance
+       -> verifier results + evidence
+       -> controller decision + progress signals
+       -> [on retry] reviewer guidance for the next attempt
   -> convergence or escalation outcome
 ```
 
