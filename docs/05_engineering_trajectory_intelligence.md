@@ -118,7 +118,7 @@ RR is the richest trajectory source. Per slice and per attempt it emits:
 - slice definitions and dependency structure
 - coder attempts and patch diffs
 - verifier results and evidence references
-- reviewer verdicts and quality signals
+- reviewer guidance and quality signals
 - controller decisions and progress/oscillation signals
 - retry histories, escalation records, and replan events
 - time-to-acceptance and convergence efficiency
@@ -213,7 +213,7 @@ Cross-instance learning, fine-tuning, and federated training are **EXPLORATORY**
 ## 11. Governance Constraints
 
 - Trajectory data is governed engineering data, subject to retention and access policy.
-- Trajectory data is not automatically training data (Document 03 §13.4).
+- Trajectory data is not automatically training data (Document 03 §13, invariant 4).
 - Provenance is mandatory for every trajectory artifact.
 - Optimization derived from trajectory data MUST be reversible.
 
