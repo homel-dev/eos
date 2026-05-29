@@ -143,7 +143,7 @@ Execution outputs consumed by RR: canonical product documentation, decision hist
 
 ## 6. Relentless Rekrow (Execution View)
 
-Relentless Rekrow is the execution component. Its architecture is the canonical **Planner → Slicer → Worker** model (manifest §10), where the Worker orchestrates an inner execution loop. The roles split across two tiers:
+Relentless Rekrow is the execution component. Its architecture is the canonical **Planner → Slicer → Worker** model (defined in this document; it originated in the project’s foundational manifest), where the Worker orchestrates an inner execution loop. The roles split across two tiers:
 
 ```mermaid
 flowchart TB
@@ -158,7 +158,7 @@ flowchart TB
         direction TB
         C["Coder<br/><i>LLM</i><br/>writes code"]
         V["Verifier<br/><b>deterministic</b><br/>runs checks → evidence"]
-        CT{"Controller<br/>decision authority<br/>pass / fail / retry"}
+        CT{"Controller<br/><i>LLM</i> — decision authority<br/>decides pass / fail / retry"}
         R["Reviewer<br/><i>LLM adviser</i><br/>guides next attempt"]
 
         C --> V --> CT
@@ -172,13 +172,13 @@ flowchart TB
 
     classDef det fill:#1f2937,stroke:#10b981,color:#fff,stroke-width:2px;
     classDef llm fill:#1f2937,stroke:#60a5fa,color:#fff,stroke-width:2px;
-    classDef dec fill:#1f2937,stroke:#f59e0b,color:#fff,stroke-width:2px;
+    classDef dec fill:#1f2937,stroke:#60a5fa,color:#fff,stroke-width:4px;
     class S,V det;
     class P,C,R llm;
     class CT dec;
 ```
 
-*Green = deterministic, blue = LLM/reasoning, amber = decision authority.* The roles split across two tiers:
+*Green = deterministic (Slicer, Verifier). Blue = LLM (Planner, Coder, Reviewer, and the Controller). The Controller is an LLM that additionally holds decision authority — shown with a heavier blue border.* The roles split across two tiers:
 
 **Upstream (decomposition) tier:**
 
@@ -189,13 +189,13 @@ flowchart TB
 
 **Worker (execution) tier — the Worker orchestrates the inner loop:**
 
-|Role          |Determinism       |Responsibility                                                                                                                                                                                                          |
-|--------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|**Worker**    |orchestrator      |Executes bounded iterative implementation loops. Applies patches, runs verification, persists artifacts, tracks progression, operates within governance constraints. The umbrella over the Coder; drives the loop below.|
-|**Coder**     |reasoning (LLM)   |Produces code/patches for the current slice attempt, using reviewer guidance on retries.                                                                                                                                |
-|**Verifier**  |**deterministic** |Runs the configured checks against the coded result; emits logs, traces, exit codes, and evidence. Does not judge — it observes.                                                                                        |
-|**Controller**|decision authority|Consumes verifier evidence and decides: pass, fail, or retry (another iteration). Governs progression.                                                                                                                  |
-|**Reviewer**  |adviser (LLM)     |On a retry, advises the Coder *before its next attempt* — adds valuable guidance to improve the next iteration. The Reviewer is an adviser positioned ahead of the next Coder attempt, not a gate after the Verifier.   |
+|Role          |Determinism             |Responsibility                                                                                                                                                                                                          |
+|--------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|**Worker**    |orchestrator            |Executes bounded iterative implementation loops. Applies patches, runs verification, persists artifacts, tracks progression, operates within governance constraints. The umbrella over the Coder; drives the loop below.|
+|**Coder**     |reasoning (LLM)         |Produces code/patches for the current slice attempt, using reviewer guidance on retries.                                                                                                                                |
+|**Verifier**  |**deterministic**       |Runs the configured checks against the coded result; emits logs, traces, exit codes, and evidence. Does not judge — it observes.                                                                                        |
+|**Controller**|LLM — decision authority|Consumes verifier evidence and decides: pass, fail, or retry (another iteration). Governs progression.                                                                                                                  |
+|**Reviewer**  |adviser (LLM)           |On a retry, advises the Coder *before its next attempt* — adds valuable guidance to improve the next iteration. The Reviewer is an adviser positioned ahead of the next Coder attempt, not a gate after the Verifier.   |
 
 
 > **Hard Invariant:** The Reviewer advises the next Coder attempt on a retry. It does not sit between Verifier and Controller. A reviewer placed after the decision advises no one; its entire purpose is to make the next iteration smarter.
@@ -220,7 +220,7 @@ canonical corpus
   -> evidence + trajectory persisted with provenance
 ```
 
-This matches the canonical workflow chain (manifest §10, original architecture §8): `Planner -> Slicer -> Worker -> Verifier -> Controller`, with the Worker containing the Coder/Verifier/Controller iteration and the Reviewer advising retries.
+This is the canonical workflow chain: `Planner -> Slicer -> Worker -> Verifier -> Controller`, with the Worker containing the Coder/Verifier/Controller iteration and the Reviewer advising retries.
 
 [Back to top](#navigation)
 
@@ -299,7 +299,7 @@ while attempt_number <= max_iterations:
 exit loop -> verified, failed, or escalated
 ```
 
-> **Hard Invariant:** The Verifier and the Slicer are deterministic. The Controller is the decision authority. The Reviewer is an LLM adviser that runs only on the retry path, ahead of the next Coder attempt — never as a gate between Verifier and Controller.
+> **Hard Invariant:** The Verifier and the Slicer are deterministic. The Controller is an LLM that holds decision authority (pass/fail/retry). The Reviewer is an LLM adviser that runs only on the retry path, ahead of the next Coder attempt — never as a gate between Verifier and Controller.
 
 Loop mechanics — feedback packets, progress detection, admission policy, provider escalation, run-level failure intelligence, warm replan — are specified in detail in the RR Phase 1 Implementation Plan. Each carries a hard invariant bounding its autonomy.
 
